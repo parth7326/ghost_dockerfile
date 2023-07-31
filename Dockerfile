@@ -23,7 +23,7 @@ RUN python3.8 get-pip.py
 
 COPY ./ /workspace/
 
-RUN pip install -r requirements.txt
+RUN pip install -r sber-swap/requirements.txt
 
 EXPOSE 80
 ENV PORT 80
