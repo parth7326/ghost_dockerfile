@@ -42,8 +42,5 @@ COPY ./ /workspace/
 
 RUN pip install -r requirements.txt
 
-EXPOSE 80
-ENV PORT 80
-
 ENTRYPOINT []
 CMD ["python3.8", "/workspace/server.py"]
