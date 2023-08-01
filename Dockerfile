@@ -1,18 +1,32 @@
 FROM nvidia/cuda:11.3.1-base-ubuntu20.04
 
-ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=Europe/Prague
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-RUN apt-get update && \
-    apt-get install -y software-properties-common && \
-    add-apt-repository -y ppa:deadsnakes/ppa && \
-    apt-get update && \
-    apt install -y python3.8 && \
-    apt-get -y install python3-pip
-
-RUN apt-get update && apt-get -y upgrade \
-  && apt-get install -y --no-install-recommends \
-    git \
+WORKDIR /workspace/
+RUN apt-get update && apt-get install -y software-properties-common && \
+add-apt-repository ppa:deadsnakes/ppa -y && \
+ apt-get update && apt-get install -y \
     wget \
-    g++ \
-    ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
+    vim \
+    python3.8 \
+    python3.8-distutils \
+    ffmpeg \
+    libsm6 \
+    libxext6 && \
+apt-get clean && \
+rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+RUN wget https://bootstrap.pypa.io/get-pip.py
+
+RUN python3.8 get-pip.py
+
+COPY ./ /workspace/
+
+RUN pip install -r requirements.txt
+
+EXPOSE 80
+ENV PORT 80
+
+ENTRYPOINT []
+CMD ["python3.8", "/workspace/server.py"]
